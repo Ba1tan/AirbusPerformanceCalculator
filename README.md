@@ -1,8 +1,11 @@
 Airbus Takeoff Performance Calculator
 
+
+
 The Airbus Takeoff Performance Calculator is an Android application designed to calculate essential takeoff parameters for various Airbus aircraft. Users can input flight and environmental data, and the app will compute V1, VR, V2 speeds, trim, and FLEX temperature, providing key metrics for safe takeoff configuration.
 
 Features
+
 
 User Input: Allows input for takeoff parameters such as flaps configuration, gross weight, QNH, temperature, runway condition, anti-ice settings, and more.
 Aircraft Performance Calculations: Computes V1, VR, V2 speeds, trim settings, and FLEX temperature based on the input data.
@@ -18,6 +21,7 @@ Installation
 Clone the Repository
 
 Build and Run
+
 
 Connect an Android device or launch an emulator.
 Build and run the application from Android Studio.
