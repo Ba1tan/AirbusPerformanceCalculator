@@ -1,0 +1,121 @@
+{
+    "type": "A320-251N",
+    "info": {
+        "manufacturer": "Airbus",
+        "model": "A20N",
+        "engines": [{
+            "type": "Jet engine",
+            "model": "CFM International LEAP-1A",
+            "thrust": "140 kN"
+        }],
+        "dimensions": {
+            "length": "37.57 m",
+            "wingspan": "35.80 m",
+            "height": "11.76 m",
+            "cabinWidth": "3.70 m",
+            "wingArea": "122.4 m²"
+        },
+        "weight": {
+            "empty": "42600",
+            "maxTakeoff": "79000",
+            "maxLanding": "68000",
+            "maxMZFW": "64300"
+        },
+        "fuelCapacity": {
+            "mainTanks": "24210 L",
+            "centerTank": "12220 L"
+        },
+        "flapConfigurations": [{
+                "type": "Takeoff",
+                "options": ["1", "1+F", "2"]
+            },
+            {
+                "type": "Approach",
+                "options": ["1", "2", "3"]
+            },
+            {
+                "type": "Landing",
+                "options": ["Full", "3"]
+            }
+        ],
+        "features": {
+            "antiIce": ["Engine", "Wings", "Tail"],
+            "airConditioning": true
+        },
+        "temperatureFactor": 49,
+        "trim": {
+          "interpolation": 1,
+          "maxCG": 40,
+          "minCG": 17,
+          "max": 2.5,
+          "min": -2.5
+        },
+        "speeds": {
+          "flapsRetr": {
+            "35": 126,
+            "40": 126,
+            "45": 126,
+            "50": 128,
+            "55": 133,
+            "60": 139,
+            "65": 145,
+            "70": 150,
+            "75": 155,
+            "80": 161
+          },          
+            "slatsRetr": {
+              "35": 152,
+              "40": 152,
+              "45": 161,
+              "50": 169,
+              "55": 178,
+              "60": 186,
+              "65": 193,
+              "70": 200,
+              "75": 207,
+              "80": 214
+            },
+            "VSpeeds": {
+              "v1factor": 0,
+              "vrfactor": 0,
+              "1": {
+                "35": 117,
+                "40": 117,
+                "45": 117,
+                "50": 118,
+                "55": 118,
+                "60": 123,
+                "65": 128,
+                "70": 133,
+                "75": 138,
+                "80": 143
+              },
+              "2": {
+                "35": 117,
+                "40": 117,
+                "45": 117,
+                "50": 117,
+                "55": 116,
+                "60": 116,
+                "65": 121,
+                "70": 126,
+                "75": 130,
+                "80": 135
+              },
+              "3": {
+                "35": 116,
+                "40": 116,
+                "45": 116,
+                "50": 116,
+                "55": 116,
+                "60": 119,
+                "65": 120,
+                "70": 123,
+                "75": 132,
+                "80": 132
+              }
+            }
+          }
+          
+    }
+}
