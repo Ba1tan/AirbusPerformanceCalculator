@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <string-array name="Aircrafts">
+        <item>A320-214</item>
+        <item>A320-251N</item>
+        <item>A319-132</item>
+        <item>A321-211</item>
+    </string-array>
+</resources>

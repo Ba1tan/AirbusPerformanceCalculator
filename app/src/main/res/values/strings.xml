@@ -1,4 +1,9 @@
 <resources>
     <string name="app_name">Airbus Performance Calculator</string>
     <string name="author">Nursultan.B</string>
+    <string name="calc_page_name">Calculation</string>
+    <string name="metar_name">METAR</string>
+    <string name="large_text">EXAMPLE</string>
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
 </resources>
