@@ -1,13 +1,17 @@
 package com.example.airbusperformancecalculator
 
+import android.util.Log
+import java.io.Console
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.round
 import kotlin.let
+import kotlin.math.log
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.roundToInt
+import kotlin.math.sin
 import kotlin.text.toDouble
 import kotlin.text.toInt
 import kotlin.toString
@@ -17,13 +21,12 @@ class Calculation
     fun calculateV2(data: Map<String, Any>): Int {
         val flightDetails = data["flightDetails"] as Map<*, *>
         val aircraftInfo = data["info"] as Info
-        val origm = (flightDetails["grossWeight"].toString()).toDouble() / 1000.0
+        val origm = (flightDetails["grossWeight"]).toString().toDouble() / 1000.0
         val aircmass = aircraftInfo.weight.empty.toInt()
         var mass = round(origm)
         if (mass == 0.0) mass = 64.3
 
-        val userFlapConfiguration = data["flightDetails"] as Map<*, *>
-        val flapConfig = userFlapConfiguration["flapsConfiguration"] as String
+        val flapConfig = flightDetails["flapsConfiguration"] as String
         var fPos = 1
 
         when (flapConfig) {
@@ -36,14 +39,13 @@ class Calculation
         val airportData = data["airport"] as Map<*, *>
         val alt = airportData["elevation"] as Int
         var staticV2: Double
+        Log.d("Value", "$mass")
         if(fPos == 1)
         {
-            staticV2 = round((aircraftInfo.speeds.VSpeeds.`1`[round5down(mass).toString()]
-                ?: 0).toDouble())
+            staticV2 = round((aircraftInfo.speeds.VSpeeds.`1`[round5down(mass).toString()]?: 0).toDouble())
             if (staticV2 == 0.0)
             {
-                staticV2 = round((aircraftInfo.speeds.VSpeeds.`1`[round10down(mass).toString()]
-                    ?: 0).toDouble())
+                staticV2 = round((aircraftInfo.speeds.VSpeeds.`1`[round10down(mass).toString()] ?: 0).toDouble())
             }
         }
         if(fPos == 2)
@@ -64,17 +66,20 @@ class Calculation
             staticV2 = round((aircraftInfo.speeds.VSpeeds.`3`[round10down(mass).toString()]
                 ?: 0).toDouble())
         }
+        Log.d("Value", "$staticV2")
+        Log.d("Value", "${round5down(mass)}")
 
 
-        if (aircmass < 60) {
+        if (aircmass / 1000 < 60) {
             staticV2 += f2corr(fPos, alt)
-            staticV2 = ((staticV2 - 1) + (mass - 40) * 18 / 40)
+            staticV2 = (staticV2 - 1) + (mass - 40) * 18 / 40
         }
 
-        (data["flightDetails"] as Map<*, *>)["runwayCondition"]?.let {
+        flightDetails["runwayCondition"]?.let {
             if (it == "wet") staticV2 += 4
             if (it == "low") staticV2 += 6
         }
+        Log.d("Value", "$staticV2")
 
         return ceil(staticV2).toInt()
     }
