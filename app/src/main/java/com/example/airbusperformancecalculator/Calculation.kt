@@ -1,17 +1,14 @@
 package com.example.airbusperformancecalculator
 
 import android.util.Log
-import java.io.Console
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.round
 import kotlin.let
-import kotlin.math.log
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
 import kotlin.math.roundToInt
-import kotlin.math.sin
 import kotlin.text.toDouble
 import kotlin.text.toInt
 import kotlin.toString
@@ -35,10 +32,11 @@ class Calculation
             "2" -> fPos = 2
             "3" -> fPos = 3
         }
+        Log.d("Value", "$fPos")
 
         val airportData = data["airport"] as Map<*, *>
         val alt = airportData["elevation"] as Int
-        var staticV2: Double
+        var staticV2: Double = 0.0
         Log.d("Value", "$mass")
         if(fPos == 1)
         {
@@ -58,13 +56,15 @@ class Calculation
                     ?: 0).toDouble())
             }
         }
-        else
-            staticV2 = round((aircraftInfo.speeds.VSpeeds.`3`[round5down(mass).toString()]
-                ?: 0).toDouble())
-        if (staticV2 == 0.0)
-        {
-            staticV2 = round((aircraftInfo.speeds.VSpeeds.`3`[round10down(mass).toString()]
-                ?: 0).toDouble())
+        if(fPos == 3) {
+            staticV2 = round(
+                (aircraftInfo.speeds.VSpeeds.`3`[round5down(mass).toString()] ?: 0).toDouble()
+            )
+            if (staticV2 == 0.0) {
+                staticV2 = round(
+                    (aircraftInfo.speeds.VSpeeds.`3`[round10down(mass).toString()] ?: 0).toDouble()
+                )
+            }
         }
         Log.d("Value", "$staticV2")
         Log.d("Value", "${round5down(mass)}")
