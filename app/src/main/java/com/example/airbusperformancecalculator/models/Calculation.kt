@@ -1,10 +1,12 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.models
 
 import android.util.Log
+import kotlin.collections.get
 import kotlin.math.ceil
 import kotlin.math.floor
 import kotlin.math.round
 import kotlin.let
+import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
@@ -109,7 +111,7 @@ class Calculation
         }
 
         if (qnhDifference < 0) {
-            flexTemp -= floor(kotlin.math.abs(qnhDifference) / 0.1).toInt()
+            flexTemp -= floor(abs(qnhDifference) / 0.1).toInt()
         }
 
         if ((data["flightDetails"] as Map<*, *>)["antiIce"] == "on") {
@@ -136,7 +138,7 @@ class Calculation
     }
 
     fun f2corr(f: Int, a: Int): Int {
-        return if (f == 2) (kotlin.math.abs(a * 2e-4)).toInt() else 0
+        return if (f == 2) (abs(a * 2e-4)).toInt() else 0
     }
 
     fun calculateTrim(

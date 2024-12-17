@@ -1,4 +1,4 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.models
 
 data class Info(
     val manufacturer: String,

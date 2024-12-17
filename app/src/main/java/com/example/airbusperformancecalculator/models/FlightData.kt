@@ -1,4 +1,4 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.models
 
 class FlightData(private val aircraft: Aircraft, private val inputData: UserInput) {
     fun createDataMap(): Map<String, Any> {

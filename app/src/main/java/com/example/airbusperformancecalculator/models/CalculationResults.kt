@@ -1,4 +1,6 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.models
+
+import kotlin.collections.get
 
 class CalculationResults(private val calculation: Calculation) {
     fun calculateAll(data: Map<String, Any>): Map<String, Any> {

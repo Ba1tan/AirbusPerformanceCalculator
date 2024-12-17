@@ -1,6 +1,5 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.fragments
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,8 +11,15 @@ import android.widget.EditText
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import com.example.airbusperformancecalculator.models.AirbusFactory
+import com.example.airbusperformancecalculator.models.Calculation
+import com.example.airbusperformancecalculator.models.CalculationResults
+import com.example.airbusperformancecalculator.R
+import com.example.airbusperformancecalculator.models.Aircraft
+import com.example.airbusperformancecalculator.models.FlightData
+import com.example.airbusperformancecalculator.models.UserInput
 import com.google.android.material.textfield.TextInputLayout
-import com.google.gson.Gson
+
 private val calculation = Calculation()
 
 class CalcFragment : Fragment() {

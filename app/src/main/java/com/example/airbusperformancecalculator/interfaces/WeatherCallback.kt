@@ -1,4 +1,4 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.interfaces
 
 interface WeatherCallback {
     fun onSuccess(response: String)

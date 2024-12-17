@@ -1,13 +1,16 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.fragments
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Button
 import android.widget.EditText
 import android.widget.TextView
+import androidx.fragment.app.Fragment
+import com.example.airbusperformancecalculator.APIServices.MetarService
+import com.example.airbusperformancecalculator.R
+import com.example.airbusperformancecalculator.interfaces.WeatherCallback
 import org.json.JSONObject
 
 class MetarFragment : Fragment() {

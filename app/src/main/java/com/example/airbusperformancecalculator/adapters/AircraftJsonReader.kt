@@ -1,4 +1,4 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.adapters
 
 import android.content.Context
 import com.google.gson.Gson

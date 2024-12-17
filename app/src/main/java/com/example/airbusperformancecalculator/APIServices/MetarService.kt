@@ -1,4 +1,5 @@
-package com.example.airbusperformancecalculator
+package com.example.airbusperformancecalculator.APIServices
+import com.example.airbusperformancecalculator.interfaces.WeatherCallback
 import okhttp3.*
 import java.io.IOException
 
@@ -11,11 +12,11 @@ class MetarService {
         val request = Request.Builder().url(url).build()
 
         client.newCall(request).enqueue(object : Callback {
-            override fun onFailure(call: okhttp3.Call, e: IOException) {
+            override fun onFailure(call: Call, e: IOException) {
                 callback.onFailure(e.message ?: "Unknown error")
             }
 
-            override fun onResponse(call: okhttp3.Call, response: Response) {
+            override fun onResponse(call: Call, response: Response) {
                 if (response.isSuccessful) {
                     val responseBody = response.body?.string()
                     if (responseBody != null) {
