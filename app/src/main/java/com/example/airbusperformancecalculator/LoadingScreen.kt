@@ -1,6 +1,7 @@
 package com.example.airbusperformancecalculator
 
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
@@ -12,6 +13,7 @@ import androidx.core.view.WindowInsetsCompat
 class LoadingScreen : AppCompatActivity() {
     private val SPLASH_TIME : Long = 2000
     override fun onCreate(savedInstanceState: Bundle?) {
+        requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT;
         super.onCreate(savedInstanceState)
         enableEdgeToEdge()
         setContentView(R.layout.activity_loading_screen)
