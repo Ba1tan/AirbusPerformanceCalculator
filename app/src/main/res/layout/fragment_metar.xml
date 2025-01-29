@@ -25,6 +25,7 @@
             app:layout_constraintEnd_toEndOf="parent" />
         <EditText
             android:id="@+id/editTextICAO"
+            android:background="@drawable/custom_input"
             android:layout_width="0dp"
             android:layout_height="48dp"
             android:layout_marginTop="24dp"

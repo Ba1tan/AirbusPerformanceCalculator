@@ -19,8 +19,11 @@ import com.example.airbusperformancecalculator.models.Aircraft
 import com.example.airbusperformancecalculator.models.FlightData
 import com.example.airbusperformancecalculator.models.UserInput
 import com.google.android.material.textfield.TextInputLayout
+import com.example.airbusperformancecalculator.models.InputValidator
+import com.example.airbusperformancecalculator.models.ValidationResult
 
 private val calculation = Calculation()
+private val inputValidator = InputValidator()
 
 class CalcFragment : Fragment() {
     private lateinit var userFlaps : EditText
@@ -61,38 +64,61 @@ class CalcFragment : Fragment() {
         resFLEX = view.findViewById(R.id.textFLEX)
         resTrim = view.findViewById(R.id.textTHS)
         aircraftType = view.findViewById(R.id.textView1)
+        var aFactory = AirbusFactory()
+        var selectedItem = "A320-214"
+        aircraftType.text = selectedItem
+        aircraft = aFactory.create(requireContext(), selectedItem)!!
         val textInputLayout : TextInputLayout = view.findViewById(R.id.inputLayout)
         val autoCompleteTextView : AutoCompleteTextView = view.findViewById(R.id.inputTV)
         val calculateButton = view.findViewById<Button>(R.id.calculateButton)
 
 
-        autoCompleteTextView.onItemClickListener= AdapterView.OnItemClickListener{
-                parent, view, position, id -> val selectedItem = parent.getItemAtPosition(position) as String
+        autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener{
+                parent, view, position, id -> selectedItem = parent.getItemAtPosition(position) as String
             aircraftType.text = selectedItem
             Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
-            var aFactory = AirbusFactory()
             aircraft = aFactory.create(requireContext(), selectedItem)!!
         }
         calculateButton.setOnClickListener(){
-            val inputData = UserInput(
+            val validationResult = inputValidator.validateInput(
+                aircraft,
                 userFlaps.text.toString(),
-                userGW.text.toString().toInt(),
-                userCG.text.toString().toDouble(),
-                userQNH.text.toString().toInt(),
-                userTemperature.text.toString().toInt(),
+                userGW.text.toString(),
+                userCG.text.toString(),
+                userQNH.text.toString(),
+                userTemperature.text.toString(),
                 userAntiIce.text.toString(),
                 userAirCond.text.toString(),
                 userRunawayCond.text.toString(),
-                userElevation.text.toString().toInt()
+                userElevation.text.toString()
             )
-            val flightData = FlightData(aircraft, inputData).createDataMap()
-            val results = CalculationResults(calculation).calculateAll(flightData)
 
-            resV1.text = results["V1"].toString()
-            resVR.text = results["VR"].toString()
-            resV2.text = results["V2"].toString()
-            resTrim.text = results["Trim"].toString()
-            resFLEX.text = results["FlexTemp"].toString()
+            when (validationResult) {
+                is ValidationResult.Success -> {
+                    val inputData = UserInput(
+                        userFlaps.text.toString(),
+                        userGW.text.toString().toInt(),
+                        userCG.text.toString().toDouble(),
+                        userQNH.text.toString().toInt(),
+                        userTemperature.text.toString().toInt(),
+                        userAntiIce.text.toString(),
+                        userAirCond.text.toString(),
+                        userRunawayCond.text.toString(),
+                        userElevation.text.toString().toInt()
+                    )
+                    val flightData = FlightData(aircraft, inputData).createDataMap()
+                    val results = CalculationResults(calculation).calculateAll(flightData)
+
+                    resV1.text = results["V1"].toString()
+                    resVR.text = results["VR"].toString()
+                    resV2.text = results["V2"].toString()
+                    resTrim.text = results["Trim"].toString()
+                    resFLEX.text = results["FlexTemp"].toString()
+                }
+                is ValidationResult.Error -> {
+                    Toast.makeText(requireContext(), validationResult.message, Toast.LENGTH_LONG).show()
+                }
+            }
         }
         return view
     }
