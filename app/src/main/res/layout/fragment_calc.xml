@@ -140,6 +140,7 @@
 
             <com.google.android.material.textfield.MaterialAutoCompleteTextView
                 android:id="@+id/inputTV"
+                android:background="@drawable/custom_input"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:inputType="none"
@@ -188,47 +189,136 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@+id/TextRunawayElevation" />
 
-        <EditText
-            android:id="@+id/editTextRunawayCond"
-            android:layout_width="132dp"
-            android:layout_height="48dp"
-            android:layout_marginStart="204dp"
-            android:background="@drawable/custom_input"
-            android:ems="10"
-            android:hint="wet, dry"
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
-            app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TextRunawayCondition" />
 
-        <EditText
-            android:id="@+id/editTextAirCond"
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutRNWCond"
+            android:background="@drawable/custom_input"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="132dp"
             android:layout_height="48dp"
+            android:layout_centerInParent="true"
+            android:layout_marginStart="204dp"
+            app:boxCornerRadiusBottomEnd="10sp"
+            app:boxCornerRadiusBottomStart="10sp"
+            app:boxCornerRadiusTopEnd="10sp"
+            app:boxCornerRadiusTopStart="10sp"
+            app:boxStrokeWidth="0sp"
+            app:boxStrokeWidthFocused="0sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/TextRunawayCondition">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/inputRNW"
+                android:background="#00000000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:padding="1dp"
+                android:text="DRY"
+                app:simpleItems="@array/RWY_Options" />
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <EditText-->
+<!--            android:id="@+id/editTextRunawayCond"-->
+<!--            android:layout_width="132dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:layout_marginStart="204dp"-->
+<!--            android:background="@drawable/custom_input"-->
+<!--            android:ems="10"-->
+<!--            android:hint="wet, dry"-->
+<!--            android:inputType="text"-->
+<!--            android:paddingStart="12dp"-->
+<!--            android:paddingEnd="12dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/TextRunawayCondition" />-->
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutAirCond"
+            android:background="@drawable/custom_input"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
+            android:layout_width="132dp"
+            android:layout_height="48dp"
+            android:layout_centerInParent="true"
             android:layout_marginStart="32dp"
-            android:background="@drawable/custom_input"
-            android:ems="10"
-            android:hint="on or off"
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
+            app:boxCornerRadiusBottomEnd="10sp"
+            app:boxCornerRadiusBottomStart="10sp"
+            app:boxCornerRadiusTopEnd="10sp"
+            app:boxCornerRadiusTopStart="10sp"
+            app:boxStrokeWidth="0sp"
+            app:boxStrokeWidthFocused="0sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TextAirConditioning" />
+            app:layout_constraintTop_toBottomOf="@+id/TextAirConditioning">
 
-        <EditText
-            android:id="@+id/editTextAntiIce"
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/inputAC"
+                android:background="#00000000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:padding="1dp"
+                android:text="ON"
+                app:simpleItems="@array/ONOFF_Options" />
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+
+<!--        <EditText-->
+<!--            android:id="@+id/editTextAirCond"-->
+<!--            android:layout_width="132dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:layout_marginStart="32dp"-->
+<!--            android:background="@drawable/custom_input"-->
+<!--            android:ems="10"-->
+<!--            android:hint="on or off"-->
+<!--            android:inputType="text"-->
+<!--            android:paddingStart="12dp"-->
+<!--            android:paddingEnd="12dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/TextAirConditioning" />-->
+
+
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/inputLayoutAntiIce"
+            android:background="@drawable/custom_input"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox.ExposedDropdownMenu"
             android:layout_width="132dp"
             android:layout_height="48dp"
+            android:layout_centerInParent="true"
             android:layout_marginStart="204dp"
-            android:background="@drawable/custom_input"
-            android:ems="10"
-            android:hint="on or off"
-            android:inputType="text"
-            android:paddingStart="12dp"
-            android:paddingEnd="12dp"
+            app:boxCornerRadiusBottomEnd="10sp"
+            app:boxCornerRadiusBottomStart="10sp"
+            app:boxCornerRadiusTopEnd="10sp"
+            app:boxCornerRadiusTopStart="10sp"
+            app:boxStrokeWidth="0sp"
+            app:boxStrokeWidthFocused="0sp"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@+id/TextAntiIce" />
+            app:layout_constraintTop_toBottomOf="@+id/TextAntiIce">
+
+            <com.google.android.material.textfield.MaterialAutoCompleteTextView
+                android:id="@+id/inputAI"
+                android:background="#00000000"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="none"
+                android:padding="1dp"
+                android:text="OFF"
+                app:simpleItems="@array/ONOFF_Options" />
+            />
+        </com.google.android.material.textfield.TextInputLayout>
+<!--        <EditText-->
+<!--            android:id="@+id/editTextAntiIce"-->
+<!--            android:layout_width="132dp"-->
+<!--            android:layout_height="48dp"-->
+<!--            android:layout_marginStart="204dp"-->
+<!--            android:background="@drawable/custom_input"-->
+<!--            android:ems="10"-->
+<!--            android:hint="on or off"-->
+<!--            android:inputType="text"-->
+<!--            android:paddingStart="12dp"-->
+<!--            android:paddingEnd="12dp"-->
+<!--            app:layout_constraintStart_toStartOf="parent"-->
+<!--            app:layout_constraintTop_toBottomOf="@+id/TextAntiIce" />-->
 
         <EditText
             android:id="@+id/editTextTemperature"
@@ -294,7 +384,7 @@
             android:layout_marginTop="44dp"
             android:text="CALCULATE"
             app:layout_constraintStart_toEndOf="@+id/editTextRunawayElev"
-            app:layout_constraintTop_toBottomOf="@+id/editTextRunawayCond" />
+            app:layout_constraintTop_toBottomOf="@+id/inputLayoutRNWCond" />
 
         <TextView
             android:id="@+id/textResult"

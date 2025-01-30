@@ -78,8 +78,8 @@ class Calculation
         }
 
         flightDetails["runwayCondition"]?.let {
-            if (it == "wet") staticV2 += 4
-            if (it == "low") staticV2 += 6
+            if (it == "WET") staticV2 += 4
+            if (it == "LOW") staticV2 += 6
         }
         Log.d("Value", "$staticV2")
 
@@ -114,11 +114,11 @@ class Calculation
             flexTemp -= floor(abs(qnhDifference) / 0.1).toInt()
         }
 
-        if ((data["flightDetails"] as Map<*, *>)["antiIce"] == "on") {
+        if ((data["flightDetails"] as Map<*, *>)["antiIce"] == "ON") {
             flexTemp -= 2
         }
 
-        if ((data["flightDetails"] as Map<*, *>)["airConditioning"] == "on") {
+        if ((data["flightDetails"] as Map<*, *>)["airConditioning"] == "OFF") {
             flexTemp -= 3
         }
 

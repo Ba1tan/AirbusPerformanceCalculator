@@ -1,13 +1,10 @@
 package com.example.airbusperformancecalculator.models
-import java.util.Objects.isNull
+
 
 class InputValidator {
-    fun validateInput(aircraft: Aircraft, flaps: String, gw: String, cg: String, qnh: String, temperature: String, antiIce: String, airCond: String, runwayCond: String, elevation: String): ValidationResult {
+    fun validateInput(aircraft: Aircraft, flaps: String, gw: String, cg: String, qnh: String, temperature: String, elevation: String): ValidationResult {
         try {
-            if(isNull(aircraft)){
-                return ValidationResult.Error("Aircraft Type not selected")
-            }
-            if (listOf(flaps, gw, cg, qnh, temperature, antiIce, airCond, runwayCond, elevation)
+            if (listOf(flaps, gw, cg, qnh, temperature, elevation)
                     .any { it.isBlank() }) {
                 return ValidationResult.Error("All fields must be filled")
             }
@@ -41,17 +38,6 @@ class InputValidator {
                 return ValidationResult.Error("Invalid Flaps setting: Must be 1, 2, or 3")
             }
 
-            if (!listOf("ON", "OFF").contains(antiIce.uppercase())) {
-                return ValidationResult.Error("Invalid Anti-Ice setting: Must be ON or OFF")
-            }
-
-            if (!listOf("ON", "OFF").contains(airCond.uppercase())) {
-                return ValidationResult.Error("Invalid Air Conditioning setting: Must be ON or OFF")
-            }
-
-            if (!listOf("DRY", "WET").contains(runwayCond.uppercase())) {
-                return ValidationResult.Error("Invalid Runway Condition: Must be DRY or WET")
-            }
 
             return ValidationResult.Success
         } catch (e: Exception) {

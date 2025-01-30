@@ -7,4 +7,13 @@
         <item>A321-211</item>
         <item>A330-243</item>
     </string-array>
+    <string-array name="ONOFF_Options">
+        <item>ON</item>
+        <item>OFF</item>
+    </string-array>
+    <string-array name="RWY_Options">
+        <item>DRY</item>
+        <item>WET</item>
+        <item>LOW</item>
+    </string-array>
 </resources>

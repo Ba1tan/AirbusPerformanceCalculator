@@ -30,9 +30,9 @@ class CalcFragment : Fragment() {
     private lateinit var userQNH : EditText
     private lateinit var userCG : EditText
     private lateinit var userTemperature : EditText
-    private lateinit var userAntiIce : EditText
-    private lateinit var userAirCond : EditText
-    private lateinit var userRunawayCond : EditText
+    private lateinit var userAntiIce : AutoCompleteTextView
+    private lateinit var userAirCond : AutoCompleteTextView
+    private lateinit var userRunawayCond : AutoCompleteTextView
     private lateinit var userElevation : EditText
     private lateinit var resV2 : TextView
     private lateinit var resV1 : TextView
@@ -53,10 +53,10 @@ class CalcFragment : Fragment() {
         userQNH = view.findViewById(R.id.editTextQNH)
         userCG = view.findViewById(R.id.editTextCG)
         userTemperature = view.findViewById(R.id.editTextTemperature)
-        userAntiIce = view.findViewById(R.id.editTextAntiIce)
-        userRunawayCond = view.findViewById(R.id.editTextRunawayCond)
+        userAntiIce = view.findViewById(R.id.inputAI)
+        userRunawayCond = view.findViewById(R.id.inputRNW)
         userElevation = view.findViewById(R.id.editTextRunawayElev)
-        userAirCond = view.findViewById(R.id.editTextAirCond)
+        userAirCond = view.findViewById(R.id.inputAC)
         resV2 = view.findViewById(R.id.textV2)
         resV1 = view.findViewById(R.id.textV1)
         resVR = view.findViewById(R.id.textVR)
@@ -64,19 +64,19 @@ class CalcFragment : Fragment() {
         resTrim = view.findViewById(R.id.textTHS)
         aircraftType = view.findViewById(R.id.textView1)
         var aFactory = AirbusFactory()
-        var selectedItem = "A320-214"
-        aircraftType.text = selectedItem
-        aircraft = aFactory.create(requireContext(), selectedItem)!!
+        var selectedAircraft = "A320-214"
+        aircraftType.text = selectedAircraft
+        aircraft = aFactory.create(requireContext(), selectedAircraft)!!
         //val textInputLayout : TextInputLayout = view.findViewById(R.id.inputLayout)
-        val autoCompleteTextView : AutoCompleteTextView = view.findViewById(R.id.inputTV)
+        val autoCompleteTextViewAircraft : AutoCompleteTextView = view.findViewById(R.id.inputTV)
         val calculateButton = view.findViewById<Button>(R.id.calculateButton)
 
 
-        autoCompleteTextView.onItemClickListener = AdapterView.OnItemClickListener{
-                parent, view, position, id -> selectedItem = parent.getItemAtPosition(position) as String
-            aircraftType.text = selectedItem
-            Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
-            aircraft = aFactory.create(requireContext(), selectedItem)!!
+        autoCompleteTextViewAircraft.onItemClickListener = AdapterView.OnItemClickListener{
+                parent, view, position, id -> selectedAircraft = parent.getItemAtPosition(position) as String
+            aircraftType.text = selectedAircraft
+            Toast.makeText(requireContext(), "Selected: $selectedAircraft", Toast.LENGTH_SHORT).show()
+            aircraft = aFactory.create(requireContext(), selectedAircraft)!!
         }
         calculateButton.setOnClickListener{
             val validationResult = inputValidator.validateInput(
@@ -86,9 +86,6 @@ class CalcFragment : Fragment() {
                 userCG.text.toString(),
                 userQNH.text.toString(),
                 userTemperature.text.toString(),
-                userAntiIce.text.toString(),
-                userAirCond.text.toString(),
-                userRunawayCond.text.toString(),
                 userElevation.text.toString()
             )
 
