@@ -18,7 +18,6 @@ import com.example.airbusperformancecalculator.R
 import com.example.airbusperformancecalculator.models.Aircraft
 import com.example.airbusperformancecalculator.models.FlightData
 import com.example.airbusperformancecalculator.models.UserInput
-import com.google.android.material.textfield.TextInputLayout
 import com.example.airbusperformancecalculator.models.InputValidator
 import com.example.airbusperformancecalculator.models.ValidationResult
 
@@ -68,7 +67,7 @@ class CalcFragment : Fragment() {
         var selectedItem = "A320-214"
         aircraftType.text = selectedItem
         aircraft = aFactory.create(requireContext(), selectedItem)!!
-        val textInputLayout : TextInputLayout = view.findViewById(R.id.inputLayout)
+        //val textInputLayout : TextInputLayout = view.findViewById(R.id.inputLayout)
         val autoCompleteTextView : AutoCompleteTextView = view.findViewById(R.id.inputTV)
         val calculateButton = view.findViewById<Button>(R.id.calculateButton)
 
@@ -79,7 +78,7 @@ class CalcFragment : Fragment() {
             Toast.makeText(requireContext(), "Selected: $selectedItem", Toast.LENGTH_SHORT).show()
             aircraft = aFactory.create(requireContext(), selectedItem)!!
         }
-        calculateButton.setOnClickListener(){
+        calculateButton.setOnClickListener{
             val validationResult = inputValidator.validateInput(
                 aircraft,
                 userFlaps.text.toString(),

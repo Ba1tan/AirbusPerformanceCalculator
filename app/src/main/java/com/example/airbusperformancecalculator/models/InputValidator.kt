@@ -1,6 +1,4 @@
 package com.example.airbusperformancecalculator.models
-import androidx.annotation.NonNull
-import com.example.airbusperformancecalculator.models.Aircraft
 import java.util.Objects.isNull
 
 class InputValidator {
@@ -10,7 +8,7 @@ class InputValidator {
                 return ValidationResult.Error("Aircraft Type not selected")
             }
             if (listOf(flaps, gw, cg, qnh, temperature, antiIce, airCond, runwayCond, elevation)
-                    .any { it.isNullOrBlank() }) {
+                    .any { it.isBlank() }) {
                 return ValidationResult.Error("All fields must be filled")
             }
 

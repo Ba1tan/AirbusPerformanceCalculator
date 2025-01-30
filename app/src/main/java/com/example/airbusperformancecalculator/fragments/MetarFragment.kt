@@ -41,7 +41,7 @@ class MetarFragment : Fragment() {
     private fun fetchWeatherData(icao: String) {
         weatherService.fetchWeatherData(icao, object : WeatherCallback {
             override fun onSuccess(response: String) {
-                requireActivity().runOnUiThread(){
+                requireActivity().runOnUiThread{
                     try {
                         val jsonObject = JSONObject(response)
                         val metarData = jsonObject.optString("metar", "No METAR data available")
@@ -57,7 +57,7 @@ class MetarFragment : Fragment() {
             }
 
             override fun onFailure(errorMessage: String) {
-                requireActivity().runOnUiThread(){
+                requireActivity().runOnUiThread{
                     metarText.text = "Failed to fetch METAR data."
                     tafText.text = "Failed to fetch TAF data."
                 }
