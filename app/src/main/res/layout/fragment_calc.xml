@@ -328,7 +328,7 @@
             android:background="@drawable/custom_input"
             android:ems="10"
             android:hint="airportTemp"
-            android:inputType="number"
+            android:inputType="numberSigned"
             android:paddingStart="12dp"
             android:paddingEnd="12dp"
             app:layout_constraintStart_toStartOf="parent"
