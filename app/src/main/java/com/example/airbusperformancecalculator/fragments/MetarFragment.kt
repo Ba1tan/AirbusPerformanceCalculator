@@ -15,51 +15,50 @@ import org.json.JSONObject
 
 class MetarFragment : Fragment() {
     private val weatherService = MetarService()
-    private lateinit var icaoText : EditText
+    private lateinit var iCAOText : EditText
     private lateinit var fetchButton : Button
-    private lateinit var metarText : TextView
-    private lateinit var tafText: TextView
+    private lateinit var mETARText : TextView
+    private lateinit var tAFText: TextView
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?): View
     {
         val view : View = inflater.inflate(R.layout.fragment_metar, container, false)
-        icaoText = view.findViewById(R.id.editTextICAO)
+        iCAOText = view.findViewById(R.id.editTextICAO)
         fetchButton = view.findViewById(R.id.fetchButton)
-        metarText = view.findViewById(R.id.textMETAR)
-        tafText = view.findViewById(R.id.textTAF)
+        mETARText = view.findViewById(R.id.textMETAR)
+        tAFText = view.findViewById(R.id.textTAF)
 
         fetchButton.setOnClickListener {
-            val icao = icaoText.text.toString().trim()
-            if (icao.isNotEmpty()) {
-                fetchWeatherData(icao)
+            val iCAO = iCAOText.text.toString().trim()
+            if (iCAO.isNotEmpty()) {
+                fetchWeatherData(iCAO)
             }
         }
         return view
     }
-    private fun fetchWeatherData(icao: String) {
-        weatherService.fetchWeatherData(icao, object : WeatherCallback {
+    private fun fetchWeatherData(iCAO: String) {
+        weatherService.fetchWeatherData(iCAO, object : WeatherCallback {
             override fun onSuccess(response: String) {
                 requireActivity().runOnUiThread{
                     try {
                         val jsonObject = JSONObject(response)
-                        val metarData = jsonObject.optString("metar", "No METAR data available")
-                        val tafData = jsonObject.optString("taf", "No TAF data available")
+                        val mETARData = jsonObject.optString("metar", "No METAR data available")
+                        val tAFData = jsonObject.optString("taf", "No TAF data available")
 
-                        metarText.text = "METAR Data:\n$metarData"
-                        tafText.text = "TAF Data:\n$tafData"
-                    } catch (e: Exception) {
-                        metarText.text = "Error parsing METAR data."
-                        tafText.text = "Error parsing TAF data."
+                        mETARText.text = getString(R.string.METAR_Info, mETARData)
+                        tAFText.text = getString(R.string.TAF_Info, tAFData)
+                    } catch (_: Exception) { mETARText.text = getString(R.string.Failed_METAR)
+                        tAFText.text = getString(R.string.TAF_Error)
                     }
                 }
             }
 
             override fun onFailure(errorMessage: String) {
                 requireActivity().runOnUiThread{
-                    metarText.text = "Failed to fetch METAR data."
-                    tafText.text = "Failed to fetch TAF data."
+                    mETARText.text = getString(R.string.Failed_METAR)
+                    tAFText.text = getString(R.string.Failed_TAF)
                 }
             }
         })
