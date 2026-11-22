@@ -1,22 +1,128 @@
 package com.example.airbusperformancecalculator.models
 
-import android.util.Log
-import kotlin.collections.get
+import kotlin.math.abs
 import kotlin.math.ceil
 import kotlin.math.floor
-import kotlin.math.round
-import kotlin.let
-import kotlin.math.abs
 import kotlin.math.max
 import kotlin.math.min
 import kotlin.math.pow
+import kotlin.math.round
 import kotlin.math.roundToInt
-import kotlin.text.toDouble
-import kotlin.text.toInt
-import kotlin.toString
 
-class Calculation
-{
+class Calculation {
+
+    fun calculate(input: TakeoffInput): TakeoffResult {
+        val aircraft = input.aircraft
+        val info = aircraft.info
+        val massTonnes = input.grossWeightKg / 1000.0
+
+        val fPos = when (input.flaps) {
+            "1", "1+F" -> 1
+            "2" -> 2
+            "3" -> 3
+            else -> 1
+        }
+
+        val speedMap: Map<String, Int> = when (fPos) {
+            1 -> info.speeds.VSpeeds.`1`
+            2 -> info.speeds.VSpeeds.`2`
+            3 -> info.speeds.VSpeeds.`3`
+            else -> info.speeds.VSpeeds.`1`
+        }
+
+        var staticV2 = interpolateSpeed(speedMap, massTonnes)
+
+        val emptyMassTonnes = (info.weight.empty.toDoubleOrNull() ?: 42000.0) / 1000.0
+        if (emptyMassTonnes < 60) {
+            staticV2 += f2corr(fPos, input.runwayElevationFt)
+            staticV2 = (staticV2 - 1) + (massTonnes - 40) * 18 / 40
+        }
+
+        when (input.runwayCondition.uppercase()) {
+            "WET" -> staticV2 += 4
+            "LOW" -> staticV2 += 6
+        }
+
+        val v2 = ceil(staticV2).toInt()
+        val v1 = calculateV1(v2, info.speeds.VSpeeds.v1factor)
+        val vr = calculateVR(v2, info.speeds.VSpeeds.vrfactor)
+
+        val trimInfo = info.trim
+        val trimString = calculateTrim(
+            minCg = trimInfo.minCG.toDouble(),
+            maxCg = trimInfo.maxCG.toDouble(),
+            minTrim = trimInfo.max,
+            maxTrim = trimInfo.min,
+            currentCg = input.centerOfGravity,
+            interpolationFactor = trimInfo.interpolation.toDouble()
+        )
+
+        val flexTemp = computeFlexTemp(
+            baseAirportTemp = input.temperatureCelsius,
+            tempFactor = info.temperatureFactor,
+            qnhHpa = input.qnhHpa,
+            antiIce = input.antiIce,
+            airConditioning = input.airConditioning
+        )
+
+        return TakeoffResult(
+            v1 = v1,
+            vr = vr,
+            v2 = v2,
+            thsTrim = trimString,
+            flexTemp = flexTemp
+        )
+    }
+
+    private fun interpolateSpeed(speedMap: Map<String, Int>, massTonnes: Double): Double {
+        if (speedMap.isEmpty()) return 135.0
+        val sortedEntries = speedMap.mapNotNull { (k, v) ->
+            k.toIntOrNull()?.let { it to v.toDouble() }
+        }.sortedBy { it.first }
+
+        if (sortedEntries.isEmpty()) return 135.0
+        if (massTonnes <= sortedEntries.first().first) return sortedEntries.first().second
+        if (massTonnes >= sortedEntries.last().first) return sortedEntries.last().second
+
+        for (i in 0 until sortedEntries.size - 1) {
+            val (w1, s1) = sortedEntries[i]
+            val (w2, s2) = sortedEntries[i + 1]
+            if (massTonnes in w1.toDouble()..w2.toDouble()) {
+                val ratio = (massTonnes - w1) / (w2 - w1)
+                return s1 + ratio * (s2 - s1)
+            }
+        }
+        return sortedEntries.last().second
+    }
+
+    private fun computeFlexTemp(
+        baseAirportTemp: Int,
+        tempFactor: Int,
+        qnhHpa: Int,
+        antiIce: String,
+        airConditioning: String
+    ): Int {
+        var flexTemp = baseAirportTemp
+        var qnhInHg = (qnhHpa / 0.99) / 33.8639
+        val qnhDifference = qnhInHg - 29.92
+
+        if (qnhDifference >= 0) {
+            flexTemp += floor(qnhDifference / 0.3).toInt()
+        } else {
+            flexTemp -= floor(abs(qnhDifference) / 0.1).toInt()
+        }
+
+        if (antiIce == "ON") {
+            flexTemp -= 2
+        }
+
+        if (airConditioning == "OFF") {
+            flexTemp -= 3
+        }
+
+        return round(flexTemp.toDouble()).toInt() + tempFactor
+    }
+
     fun calculateV2(data: Map<String, Any>): Int {
         val flightDetails = data["flightDetails"] as Map<*, *>
         val aircraftInfo = data["info"] as Info
@@ -26,51 +132,24 @@ class Calculation
         if (mass == 0.0) mass = 64.3
 
         val flapConfig = flightDetails["flapsConfiguration"] as String
-        var fPos = 1
-
-        when (flapConfig) {
-            "1" -> fPos = 1
-            "1+F" -> fPos = 1
-            "2" -> fPos = 2
-            "3" -> fPos = 3
+        val fPos = when (flapConfig) {
+            "1", "1+F" -> 1
+            "2" -> 2
+            "3" -> 3
+            else -> 1
         }
-        Log.d("Value", "$fPos")
 
         val airportData = data["airport"] as Map<*, *>
         val alt = airportData["elevation"] as Int
-        var staticV2: Double = 0.0
-        Log.d("Value", "$mass")
-        if(fPos == 1)
-        {
-            staticV2 = round((aircraftInfo.speeds.VSpeeds.`1`[round5down(mass).toString()]?: 0).toDouble())
-            if (staticV2 == 0.0)
-            {
-                staticV2 = round((aircraftInfo.speeds.VSpeeds.`1`[round10down(mass).toString()] ?: 0).toDouble())
-            }
-        }
-        if(fPos == 2)
-        {
-            staticV2 = round((aircraftInfo.speeds.VSpeeds.`2`[round5down(mass).toString()]
-                ?: 0).toDouble())
-            if (staticV2 == 0.0)
-            {
-                staticV2 = round((aircraftInfo.speeds.VSpeeds.`2`[round10down(mass).toString()]
-                    ?: 0).toDouble())
-            }
-        }
-        if(fPos == 3) {
-            staticV2 = round(
-                (aircraftInfo.speeds.VSpeeds.`3`[round5down(mass).toString()] ?: 0).toDouble()
-            )
-            if (staticV2 == 0.0) {
-                staticV2 = round(
-                    (aircraftInfo.speeds.VSpeeds.`3`[round10down(mass).toString()] ?: 0).toDouble()
-                )
-            }
-        }
-        Log.d("Value", "$staticV2")
-        Log.d("Value", "${round5down(mass)}")
 
+        val speedMap = when (fPos) {
+            1 -> aircraftInfo.speeds.VSpeeds.`1`
+            2 -> aircraftInfo.speeds.VSpeeds.`2`
+            3 -> aircraftInfo.speeds.VSpeeds.`3`
+            else -> aircraftInfo.speeds.VSpeeds.`1`
+        }
+
+        var staticV2 = interpolateSpeed(speedMap, mass)
 
         if (aircmass / 1000 < 60) {
             staticV2 += f2corr(fPos, alt)
@@ -81,10 +160,10 @@ class Calculation
             if (it == "WET") staticV2 += 4
             if (it == "LOW") staticV2 += 6
         }
-        Log.d("Value", "$staticV2")
 
         return ceil(staticV2).toInt()
     }
+
     fun calculateV1(v2: Int, factor: Int? = null): Int {
         var v1 = v2 - 5
         factor?.let { v1 -= it }
@@ -96,77 +175,48 @@ class Calculation
         factor?.let { vr -= it }
         return vr
     }
+
     fun calculateFlexTemp(data: Map<String, Any>): Int {
         val aircraftInfo = data["info"] as Info
-        var flexTemp = (data["airport"] as Map<*, *>)["temperature"] as Int? ?: 15
-        val plusTemp = aircraftInfo.temperatureFactor
-        val qnhHp = (data["flightDetails"] as Map<*, *>)["QNH"] as Int
-        var qnhInHg = convertQnhHgToHp(qnhHp.toDouble())
-        qnhInHg /= 33.8639
+        val airport = data["airport"] as Map<*, *>
+        val flightDetails = data["flightDetails"] as Map<*, *>
 
-        val qnhDifference = qnhInHg - 29.92
+        val temp = airport["temperature"] as? Int ?: 15
+        val qnh = flightDetails["QNH"] as? Int ?: 1013
+        val antiIce = flightDetails["antiIce"] as? String ?: "OFF"
+        val airCond = flightDetails["airConditioning"] as? String ?: "ON"
 
-        if (qnhDifference >= 0) {
-            flexTemp += floor(qnhDifference / 0.3).toInt()
-        }
-
-        if (qnhDifference < 0) {
-            flexTemp -= floor(abs(qnhDifference) / 0.1).toInt()
-        }
-
-        if ((data["flightDetails"] as Map<*, *>)["antiIce"] == "ON") {
-            flexTemp -= 2
-        }
-
-        if ((data["flightDetails"] as Map<*, *>)["airConditioning"] == "OFF") {
-            flexTemp -= 3
-        }
-
-        flexTemp = round(flexTemp.toDouble()).toInt() + plusTemp
-
-        return flexTemp
-    }
-    private fun convertQnhHgToHp(qnhHg: Double): Double {
-        return qnhHg / 0.99
-    }
-    fun round5down(x: Double): Int {
-        return (floor(x / 5) * 5).toInt()
+        return computeFlexTemp(temp, aircraftInfo.temperatureFactor, qnh, antiIce, airCond)
     }
 
-    fun round10down(x: Double): Int {
-        return (floor(x / 10) * 10).toInt()
-    }
+    fun round5down(x: Double): Int = (floor(x / 5) * 5).toInt()
 
-    fun f2corr(f: Int, a: Int): Int {
-        return if (f == 2) (abs(a * 2e-4)).toInt() else 0
-    }
+    fun round10down(x: Double): Int = (floor(x / 10) * 10).toInt()
+
+    fun f2corr(f: Int, a: Int): Int = if (f == 2) (abs(a * 2e-4)).toInt() else 0
 
     fun calculateTrim(
-        keyInicial: Double,
-        keyMax: Double,
-        valorInicial: Double,
-        maxVal: Double,
-        point: Double,
-        speed: Double = 1.0
+        minCg: Double,
+        maxCg: Double,
+        minTrim: Double,
+        maxTrim: Double,
+        currentCg: Double,
+        interpolationFactor: Double = 1.0
     ): String {
-        val velocidadNormalizada = max(0.0, min(2.0, speed))
-
-        val proporcion = if (velocidadNormalizada == 0.0) {
+        val normalizedFactor = max(0.01, min(2.0, interpolationFactor))
+        val proportion = if (maxCg == minCg) {
             0.0
         } else {
-            (point - keyInicial) / (keyMax - keyInicial).pow(
-                (1 / speed.pow(speed)) / velocidadNormalizada
-            )
+            (currentCg - minCg) / (maxCg - minCg).pow((1.0 / normalizedFactor.pow(normalizedFactor)) / normalizedFactor)
         }
 
-        val valorCalculado = valorInicial + proporcion * (maxVal - valorInicial)
-        val valorFinal = (valorCalculado * 10).roundToInt() / 10.0
+        val calculatedTrim = minTrim + proportion * (maxTrim - minTrim)
+        val finalTrim = (calculatedTrim * 10).roundToInt() / 10.0
 
-        return if (valorFinal >= 0) {
-            "UP${valorFinal.toString().replace("+", "")}"
+        return if (finalTrim >= 0) {
+            "UP ${finalTrim}"
         } else {
-            "DN${valorFinal.toString().replace("-", "")}"
+            "DN ${abs(finalTrim)}"
         }
     }
-
 }

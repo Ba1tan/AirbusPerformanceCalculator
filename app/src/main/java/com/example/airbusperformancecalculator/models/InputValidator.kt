@@ -1,27 +1,37 @@
 package com.example.airbusperformancecalculator.models
 
-
 class InputValidator {
-    fun validateInput(aircraft: Aircraft, flaps: String, gw: String, cg: String, qnh: String, temperature: String, elevation: String): ValidationResult {
+    fun validateInput(
+        aircraft: Aircraft,
+        flaps: String,
+        gw: String,
+        cg: String,
+        qnh: String,
+        temperature: String,
+        elevation: String
+    ): ValidationResult {
         try {
-            if (listOf(flaps, gw, cg, qnh, temperature, elevation)
-                    .any { it.isBlank() }) {
+            if (listOf(flaps, gw, cg, qnh, temperature, elevation).any { it.isBlank() }) {
                 return ValidationResult.Error("All fields must be filled")
             }
 
             val gwValue = gw.toIntOrNull()
-            if (gwValue == null || gwValue < aircraft.info.weight.empty.toInt() || gwValue > aircraft.info.weight.maxTakeoff.toInt()) {
-                return ValidationResult.Error("Invalid Gross Weight: Must be between ${aircraft.info.weight.empty.toInt()} and ${aircraft.info.weight.maxTakeoff.toInt()}")
+            val emptyWeight = aircraft.info.weight.empty.toIntOrNull() ?: 40000
+            val maxTakeoffWeight = aircraft.info.weight.maxTakeoff.toIntOrNull() ?: 80000
+            if (gwValue == null || gwValue < emptyWeight || gwValue > maxTakeoffWeight) {
+                return ValidationResult.Error("Invalid Gross Weight: Must be between $emptyWeight and $maxTakeoffWeight kg")
             }
 
             val cgValue = cg.toDoubleOrNull()
-            if (cgValue == null || cgValue < aircraft.info.trim.minCG.toInt() || cgValue > aircraft.info.trim.maxCG.toInt()) {
-                return ValidationResult.Error("Invalid CG: Must be between ${aircraft.info.trim.minCG.toInt()} and ${aircraft.info.trim.maxCG.toInt()}")
+            val minCg = aircraft.info.trim.minCG
+            val maxCg = aircraft.info.trim.maxCG
+            if (cgValue == null || cgValue < minCg || cgValue > maxCg) {
+                return ValidationResult.Error("Invalid CG: Must be between $minCg% and $maxCg% MAC")
             }
 
             val qnhValue = qnh.toIntOrNull()
             if (qnhValue == null || qnhValue < 900 || qnhValue > 1100) {
-                return ValidationResult.Error("Invalid QNH: Must be between 900 and 1100")
+                return ValidationResult.Error("Invalid QNH: Must be between 900 and 1100 hPa")
             }
 
             val tempValue = temperature.toIntOrNull()
@@ -31,13 +41,13 @@ class InputValidator {
 
             val elevValue = elevation.toIntOrNull()
             if (elevValue == null || elevValue < -1000 || elevValue > 14000) {
-                return ValidationResult.Error("Invalid Elevation: Must be between -1000 and 14000 feet")
+                return ValidationResult.Error("Invalid Elevation: Must be between -1000 and 14000 ft")
             }
 
-            if (!listOf("1+F","1", "2", "3").contains(flaps)) {
-                return ValidationResult.Error("Invalid Flaps setting: Must be 1, 2, or 3")
+            val cleanFlaps = flaps.trim().uppercase()
+            if (!listOf("1+F", "1", "2", "3").contains(cleanFlaps)) {
+                return ValidationResult.Error("Invalid Flaps setting: Select 1+F, 2, or 3")
             }
-
 
             return ValidationResult.Success
         } catch (e: Exception) {
@@ -45,7 +55,8 @@ class InputValidator {
         }
     }
 }
+
 sealed class ValidationResult {
-    object Success : ValidationResult()
+    data object Success : ValidationResult()
     data class Error(val message: String) : ValidationResult()
 }

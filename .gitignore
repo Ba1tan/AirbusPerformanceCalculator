@@ -1,15 +1,49 @@
-*.iml
-.gradle
-/local.properties
-/.idea/caches
-/.idea/libraries
-/.idea/modules.xml
-/.idea/workspace.xml
-/.idea/navEditor.xml
-/.idea/assetWizardSettings.xml
-.DS_Store
-/build
-/captures
-.externalNativeBuild
-.cxx
+# Gradle files & build cache
+.gradle/
+build/
+*/build/
+
+# Local SDK configuration
 local.properties
+/local.properties
+
+# Build artifacts & outputs
+*.apk
+*.aab
+*.aar
+*.ap_
+*.dex
+*.class
+
+# Signing keys & secrets (DO NOT COMMIT!)
+*.jks
+*.keystore
+secrets.properties
+
+# IntelliJ IDEA / Android Studio local files
+*.iml
+.idea/workspace.xml
+.idea/tasks.xml
+.idea/caches/
+.idea/libraries/
+.idea/modules.xml
+.idea/navEditor.xml
+.idea/assetWizardSettings.xml
+.idea/deploymentTargetSelector.xml
+.idea/deviceManager.xml
+.idea/shelf/
+.idea/usage.statistics.xml
+
+# Android Studio captures
+captures/
+/captures
+
+# NDK / Native
+.externalNativeBuild
+.cxx/
+
+# OS specific files
+.DS_Store
+.DS_Store?
+._*
+Thumbs.db

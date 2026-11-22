@@ -5,51 +5,48 @@
     android:id="@+id/main"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".LoadingScreen"
-    android:orientation="vertical"
-    android:background="@color/black">
+    android:background="@color/black"
+    tools:context=".LoadingScreen">
 
     <ImageView
         android:id="@+id/loadLogo"
-        android:layout_width="200dp"
-        android:layout_height="200dp"
+        android:layout_width="160dp"
+        android:layout_height="160dp"
+        android:contentDescription="@string/app_name"
         android:src="@drawable/loadingicon"
-        app:layout_constraintBottom_toBottomOf="@+id/textView"
+        app:layout_constraintBottom_toTopOf="@+id/textAppTitle"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
-
-    </ImageView>
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintVertical_chainStyle="packed" />
 
     <TextView
-        android:layout_width="match_parent"
+        android:id="@+id/textAppTitle"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_below="@+id/loadLogo"
+        android:layout_marginStart="24dp"
+        android:layout_marginTop="20dp"
+        android:layout_marginEnd="24dp"
         android:text="@string/app_name"
         android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="32sp"
+        android:textColor="@color/airbus_cyan"
+        android:textSize="26sp"
         android:textStyle="bold"
-        app:layout_constraintTop_toBottomOf="@+id/loadLogo"
-        android:layout_marginTop="10px"
-        tools:layout_editor_absoluteX="0dp">
-
-    </TextView>
+        app:layout_constraintBottom_toTopOf="@+id/textAuthor"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/loadLogo" />
 
     <TextView
-        android:id="@+id/textView"
-        android:layout_width="match_parent"
+        android:id="@+id/textAuthor"
+        android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_alignParentBottom="true"
-        android:layout_marginBottom="20px"
+        android:layout_marginBottom="32dp"
         android:text="@string/author"
-        android:textAlignment="center"
-        android:textColor="@color/white"
-        android:textSize="18sp"
-        android:textStyle="bold"
+        android:textColor="@color/text_secondary"
+        android:textSize="14sp"
         app:layout_constraintBottom_toBottomOf="parent"
-        tools:layout_editor_absoluteX="0dp">
-
-    </TextView>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

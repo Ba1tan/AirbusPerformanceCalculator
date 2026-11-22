@@ -2,13 +2,15 @@
     <string name="app_name">Airbus Performance Calculator</string>
     <string name="author">Nursultan.B</string>
     <string name="calc_page_name">Calculation</string>
-    <string name="metar_name">METAR</string>
+    <string name="metar_name">METAR / TAF</string>
     <string name="large_text">EXAMPLE</string>
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="Failed_METAR">Failed to fetch METAR data.</string>
-    <string name="Failed_TAF">"Failed to fetch TAF data</string>
+    <string name="Failed_TAF">Failed to fetch TAF data.</string>
     <string name="METAR_Info">METAR: %1$s</string>
     <string name="TAF_Info">TAF: %1$s</string>
     <string name="METAR_Error">Error parsing METAR data</string>
     <string name="TAF_Error">Error parsing TAF data</string>
+    <string name="apply_to_calculator">Apply Weather to Calculator</string>
+    <string name="weather_applied">Applied QNH and Temperature to Calculator!</string>
 </resources>

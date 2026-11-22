@@ -1,34 +1,35 @@
 package com.example.airbusperformancecalculator.models
 
 import android.content.Context
+import android.util.Log
 import com.example.airbusperformancecalculator.adapters.AircraftJsonReader
 
-class AirbusFactory() {
+class AirbusFactory {
     private val jsonReader = AircraftJsonReader()
-    private val A320_FILE = "A320-214.json"
-    private val A321_FILE = "A321-211.json"
-    private val A319_FILE = "A319-132.json"
-    private val A320_NEO_FILE = "A320-251N.json"
-    private val A330_FILE = "A330-243.json"
+    private val cache = mutableMapOf<String, Aircraft>()
 
-    private fun createAircraftFromJson(context: Context, filePath: String): Aircraft? {
-        val jsonString = jsonReader.readJsonFromAssets(context, filePath)
-        val aircraft = jsonReader.gson.fromJson(jsonString, Aircraft::class.java)
-        return aircraft
-    }
-    fun create(context: Context, type : String) : Aircraft?
-    {
-        return when(type){
-            "A320-214" -> createAircraftFromJson(context, A320_FILE)
-            "A320-251N" -> createAircraftFromJson(context, A320_NEO_FILE)
-            "A321-211" -> createAircraftFromJson(context, A321_FILE)
-            "A319-132" -> createAircraftFromJson(context, A319_FILE)
-            "A330-243" -> createAircraftFromJson(context, A330_FILE)
-            else -> throw IllegalArgumentException("Unknown model")
+    private val aircraftFiles = mapOf(
+        "A320-214" to "A320-214.json",
+        "A320-251N" to "A320-251N.json",
+        "A321-211" to "A321-211.json",
+        "A319-132" to "A319-132.json",
+        "A330-243" to "A330-243.json"
+    )
+
+    fun create(context: Context, type: String): Aircraft? {
+        cache[type]?.let { return it }
+
+        val fileName = aircraftFiles[type] ?: return null
+        return try {
+            val jsonString = jsonReader.readJsonFromAssets(context, fileName)
+            val aircraft = jsonReader.gson.fromJson(jsonString, Aircraft::class.java)
+            if (aircraft != null) {
+                cache[type] = aircraft
+            }
+            aircraft
+        } catch (e: Exception) {
+            Log.e("AirbusFactory", "Error loading aircraft $type from $fileName", e)
+            null
         }
-
     }
-
-
-
 }

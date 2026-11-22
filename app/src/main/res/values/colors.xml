@@ -2,5 +2,15 @@
 <resources>
     <color name="black">#FF000000</color>
     <color name="white">#FFFFFFFF</color>
-    <color name="green">#9ACD32</color>
+    <color name="green">#00E676</color>
+    <color name="airbus_cyan">#00E5FF</color>
+    <color name="airbus_green">#00E676</color>
+    <color name="airbus_amber">#FFB300</color>
+    <color name="airbus_magenta">#EA80FC</color>
+    <color name="cockpit_bg">#FF000000</color>
+    <color name="cockpit_surface">#121620</color>
+    <color name="cockpit_surface_variant">#1A202E</color>
+    <color name="cockpit_outline">#2A3448</color>
+    <color name="text_primary">#F1F5F9</color>
+    <color name="text_secondary">#94A3B8</color>
 </resources>

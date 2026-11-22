@@ -4,63 +4,100 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Button
-import android.widget.EditText
-import android.widget.TextView
+import android.widget.Toast
 import androidx.fragment.app.Fragment
-import com.example.airbusperformancecalculator.APIServices.MetarService
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.lifecycleScope
+import androidx.lifecycle.repeatOnLifecycle
+import com.example.airbusperformancecalculator.MainActivity
 import com.example.airbusperformancecalculator.R
-import com.example.airbusperformancecalculator.interfaces.WeatherCallback
-import org.json.JSONObject
+import com.example.airbusperformancecalculator.databinding.FragmentMetarBinding
+import com.example.airbusperformancecalculator.viewmodels.AirbusViewModel
+import kotlinx.coroutines.launch
 
 class MetarFragment : Fragment() {
-    private val weatherService = MetarService()
-    private lateinit var iCAOText : EditText
-    private lateinit var fetchButton : Button
-    private lateinit var mETARText : TextView
-    private lateinit var tAFText: TextView
+
+    private var _binding: FragmentMetarBinding? = null
+    private val binding get() = _binding!!
+
+    private val viewModel: AirbusViewModel by activityViewModels()
 
     override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?): View
-    {
-        val view : View = inflater.inflate(R.layout.fragment_metar, container, false)
-        iCAOText = view.findViewById(R.id.editTextICAO)
-        fetchButton = view.findViewById(R.id.fetchButton)
-        mETARText = view.findViewById(R.id.textMETAR)
-        tAFText = view.findViewById(R.id.textTAF)
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View {
+        _binding = FragmentMetarBinding.inflate(inflater, container, false)
+        return binding.root
+    }
 
-        fetchButton.setOnClickListener {
-            val iCAO = iCAOText.text.toString().trim()
-            if (iCAO.isNotEmpty()) {
-                fetchWeatherData(iCAO)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        binding.fetchButton.setOnClickListener {
+            val icao = binding.editTextICAO.text.toString().trim()
+            if (icao.isNotEmpty()) {
+                viewModel.fetchWeather(icao)
+            } else {
+                Toast.makeText(requireContext(), "Please enter an ICAO code", Toast.LENGTH_SHORT).show()
             }
         }
-        return view
-    }
-    private fun fetchWeatherData(iCAO: String) {
-        weatherService.fetchWeatherData(iCAO, object : WeatherCallback {
-            override fun onSuccess(response: String) {
-                requireActivity().runOnUiThread{
-                    try {
-                        val jsonObject = JSONObject(response)
-                        val mETARData = jsonObject.optString("metar", "No METAR data available")
-                        val tAFData = jsonObject.optString("taf", "No TAF data available")
 
-                        mETARText.text = getString(R.string.METAR_Info, mETARData)
-                        tAFText.text = getString(R.string.TAF_Info, tAFData)
-                    } catch (_: Exception) { mETARText.text = getString(R.string.Failed_METAR)
-                        tAFText.text = getString(R.string.TAF_Error)
+        binding.btnApplyWeather.setOnClickListener {
+            val weather = viewModel.weatherState.value
+            if (weather != null) {
+                viewModel.applyWeatherToCalculator(weather)
+                Toast.makeText(requireContext(), getString(R.string.weather_applied), Toast.LENGTH_SHORT).show()
+                (activity as? MainActivity)?.navigateToCalculator()
+            }
+        }
+
+        observeViewModel()
+    }
+
+    private fun observeViewModel() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewLifecycleOwner.repeatOnLifecycle(Lifecycle.State.STARTED) {
+                launch {
+                    viewModel.isWeatherLoading.collect { isLoading ->
+                        binding.progressBar.visibility = if (isLoading) View.VISIBLE else View.GONE
+                        binding.fetchButton.isEnabled = !isLoading
+                    }
+                }
+
+                launch {
+                    viewModel.weatherError.collect { error ->
+                        if (error != null) {
+                            binding.textError.visibility = View.VISIBLE
+                            binding.textError.text = error
+                            binding.cardDecoded.visibility = View.GONE
+                        } else {
+                            binding.textError.visibility = View.GONE
+                        }
+                    }
+                }
+
+                launch {
+                    viewModel.weatherState.collect { weather ->
+                        if (weather != null) {
+                            binding.textMETAR.text = weather.rawMetar
+                            binding.textTAF.text = weather.rawTaf
+
+                            binding.textDecodedWind.text = weather.windString ?: "N/A"
+                            binding.textDecodedTemp.text = weather.temperatureCelsius?.let { "$it°C" } ?: "N/A"
+                            binding.textDecodedQnh.text = weather.qnhHpa?.let { "$it hPa" } ?: "N/A"
+
+                            binding.cardDecoded.visibility = View.VISIBLE
+                        }
                     }
                 }
             }
+        }
+    }
 
-            override fun onFailure(errorMessage: String) {
-                requireActivity().runOnUiThread{
-                    mETARText.text = getString(R.string.Failed_METAR)
-                    tAFText.text = getString(R.string.Failed_TAF)
-                }
-            }
-        })
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 }

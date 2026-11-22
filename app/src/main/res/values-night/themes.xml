@@ -1,7 +1,18 @@
 <resources xmlns:tools="http://schemas.android.com/tools">
-    <!-- Base application theme. -->
-    <style name="Base.Theme.AirbusPerformanceCalculator" parent="Theme.Material3.DayNight.NoActionBar">
-        <!-- Customize your dark theme here. -->
-        <!-- <item name="colorPrimary">@color/my_dark_primary</item> -->
+    <!-- Base application theme: forced Dark Theme for aviation cockpit experience -->
+    <style name="Base.Theme.AirbusPerformanceCalculator" parent="Theme.Material3.Dark.NoActionBar">
+        <item name="colorPrimary">@color/airbus_cyan</item>
+        <item name="colorSecondary">@color/airbus_green</item>
+        <item name="android:windowBackground">@color/black</item>
+        <item name="android:colorBackground">@color/black</item>
+        <item name="colorSurface">@color/cockpit_surface</item>
+        <item name="colorSurfaceContainer">@color/cockpit_surface</item>
+        <item name="colorSurfaceContainerHigh">@color/cockpit_surface_variant</item>
+        <item name="colorOnBackground">@color/text_primary</item>
+        <item name="colorOnSurface">@color/text_primary</item>
+        <item name="android:textColorPrimary">@color/text_primary</item>
+        <item name="android:textColorSecondary">@color/text_secondary</item>
+        <item name="android:statusBarColor">@color/black</item>
+        <item name="android:navigationBarColor">@color/black</item>
     </style>
 </resources>
